@@ -6,32 +6,22 @@ class DisciplinaView:
     def __init__(self, parent):
         self.service = DisciplinaService()
         self.service_aluno = AlunoService()
-        self.definir_estilos()
         
-        aba = Frame(parent, background=self.estilos['aba_bg'])
+        aba = Frame(parent)
         parent.add(aba, text="DISCIPLINA")
         
         frame_superior = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2,
         )
         frame_superior.place(relx=0, rely=0.01, relwidth=1, relheight=0.25)
         
         frame_meio = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2
         )
         frame_meio.place(relx=0, rely=0.26, relwidth=1, relheight=0.25)
         
         frame_inferior = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2
         )
         frame_inferior.place(relx=0, rely=0.51, relwidth=1, relheight=0.48)
         
@@ -44,8 +34,7 @@ class DisciplinaView:
         ]
         for texto, comando, relx, rely in botoes_superior:
             Button(
-                frame_superior, text=texto, font=self.estilos['bt_font'],
-                background=self.estilos['bt_bg'], border=2, activebackground=self.estilos['bt_bg_act'], foreground=self.estilos['bt_fg'], activeforeground=self.estilos['bt_fg_act'],
+                frame_superior, text=texto, border=2,
                 command=comando
             ).place(relx=relx, rely=rely, relwidth=0.12, relheight=0.15)
         
@@ -57,22 +46,20 @@ class DisciplinaView:
         ]
         for texto, comando, relx, rely, relwidth, relheight in botoes_inferior:
             Button(
-                frame_inferior, text=texto, font=self.estilos['bt_font'],
-                background=self.estilos['bt_bg'], border=2, activebackground=self.estilos['bt_bg_act'], foreground=self.estilos['bt_fg'], activeforeground=self.estilos['bt_fg_act'],
+                frame_inferior, text=texto, border=2,
                 command=comando
             ).place(relx=relx, rely=rely, relwidth=relwidth, relheight=relheight)
         
         labels_superior = [
             ("MATRICULA:", 0.03, 0.06),
-            ("NOME:", 0.03, 0.32),
-            ("TURNO:", 0.03, 0.58), ("SALA:", 0.27, 0.58)
+            ("NOME:",      0.03, 0.32),
+            ("TURNO:",     0.03, 0.58),
+            ("SALA:",      0.27, 0.58)
         ]
         for texto, x, y in labels_superior:
             Label(
-                frame_superior, text=texto, font=self.estilos['lb_font'],
-                background=self.estilos['lb_bg'], foreground=self.estilos['lb_fg'], 
-                activeforeground=self.estilos['lb_fg_act']
-            ).place(relx=x, rely=y)
+                frame_superior, text=texto
+            ).place(relx=x, rely=y, relwidth=0.20, relheight=0.10)
         
         labels_inferior = [
             ("MAT.:"       , 0.03, 0.00),
@@ -81,15 +68,14 @@ class DisciplinaView:
         ]
         for texto, x, y in labels_inferior:
             Label(
-                frame_inferior, text=texto, font=self.estilos['lb_font'],
-                background=self.estilos['lb_bg'], foreground=self.estilos['lb_fg'], 
-                activeforeground=self.estilos['lb_fg_act']
+                frame_inferior, text=texto,
             ).place(relx=x, rely=y)
         
         self.entry_matricula = self.criar_entry(frame_superior, 0.02, 0.16)
         self.entry_nome      = self.criar_entry(frame_superior, 0.02, 0.42)
         self.entry_turno     = self.criar_entry(frame_superior, 0.02, 0.68)
         self.entry_sala      = self.criar_entry(frame_superior, 0.26, 0.68)
+        
         self.entry_aluno_matricula = self.criar_entry_aluno(frame_inferior, 0.02, 0.06, width=0.10)
         self.entry_aluno_nome = self.criar_entry_aluno(frame_inferior, 0.13, 0.06, width=0.30)
         self.entry_aluno_data_nascimento = self.criar_entry_aluno(frame_inferior, 0.44, 0.06)
@@ -101,40 +87,16 @@ class DisciplinaView:
         
         self.listagem()
     
-    def definir_estilos(self):
-        self.estilos = {
-            "aba_bg": "#DFEDF1",
-            "frame_bg": "#DFEDF1",
-            "frame_hl": "#00A7F8",
-            "frame_hl_act": "#00A7F8",
-            "bt_bg": "#00A7F8",
-            "bt_fg": "#FFFFFF",
-            "bt_bg_act": "#FFFFFF",
-            "bt_fg_act": "#00A7F8",
-            "bt_font": ("Arial", 10, "bold"),
-            "lb_bg": "#DFEDF1",
-            "lb_fg": "#00A7F8",
-            "lb_fg_act": "#00A7F8",
-            "lb_font": ("Arial", 10, "bold"),
-            "entry_bg": "#FAFAFA",
-            "entry_fg": "#666666",
-            "entry_font": ("Arial", 10, "bold")
-        }
-    
     def criar_entry(self, parent, x, y, width=0.23, height=0.15):
         entry = Entry(
-            parent, font=self.estilos['entry_font'],
-            foreground=self.estilos['entry_fg'], background=self.estilos['entry_bg'],
-            border=2, highlightbackground=self.estilos['entry_bg']
+            parent, border=2
         )
         entry.place(relx=x, rely=y, relwidth=width, relheight=height)
         return entry
 
     def criar_entry_aluno(self, parent, x, y, width=0.15, height=0.08):
         entry = Entry(
-            parent, font=self.estilos['entry_font'],
-            foreground=self.estilos['entry_fg'], background=self.estilos['entry_bg'],
-            border=2, highlightbackground=self.estilos['entry_bg']
+            parent, border=2
         )
         entry.place(relx=x, rely=y, relwidth=width, relheight=height)
         return entry
@@ -241,10 +203,10 @@ class DisciplinaView:
             return messagebox.showerror("ATENÇÃO!", "Digite uma matricula ou nome validos, nenhum aluno foi encontrado.")
     
     def buscar_aluno(self) -> None:
-        matruicula_aluno = self.entry_aluno_matricula.get()
-        if matruicula_aluno:
+        matricula_aluno = self.entry_aluno_matricula.get()
+        if matricula_aluno:
             self.limpar_aluno()
-            aluno = self.service_aluno.buscar_por_matricula(matruicula_aluno)
+            aluno = self.service_aluno.buscar_por_matricula(matricula_aluno)
             if aluno:
                 self.entry_aluno_matricula.insert(END, aluno.get_matricula())
                 self.entry_aluno_nome.insert(END, aluno.get_nome())

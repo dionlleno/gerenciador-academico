@@ -1,41 +1,19 @@
-from tkinter import Tk
-from tkinter import ttk
+from ttkbootstrap import Window
+from ttkbootstrap.constants import *
+from ttkbootstrap.widgets import Notebook
 from views.aluno_view import AlunoView
 from views.disciplina_view import DisciplinaView
 
 class Aplicacao:
     def __init__(self) -> None:
-        self.janela = Tk()
+        self.janela = Window(themename="flatly")  # Você pode mudar o tema aqui (ex: "darkly", "superhero", etc.)
         self.janela.title("Gestão Acadêmica")
         self.janela.geometry("650x600")
-        self.janela.resizable(False, False)
-        
-        # Configurar estilo
-        self.estilo = ttk.Style()
-        self.estilo.theme_use("clam")  # Define um tema moderno
+        self.janela.resizable(True, True)
 
-        # Personalizar a aba do Notebook
-        self.estilo.configure("TNotebook", background="#FFFFFF", borderwidth=2)
-
-        # Personalizar abas não selecionadas
-        self.estilo.configure(
-            "TNotebook.Tab",
-            background="#DFEDF1",
-            foreground="#00A7F8",
-            #padding=[10, 5],
-            font=("Arial", 10, "bold")
-        )
-
-        # Personalizar aba selecionada
-        self.estilo.map(
-            "TNotebook.Tab",
-            background=[("selected", "#00A7F8")],
-            foreground=[("selected", "#FFFFFF")],
-        )
-
-        # Criar abas
-        self.abas = ttk.Notebook(self.janela)
-        self.abas.place(relx=0.00, rely=0.00, relwidth=1.00, relheight=1.00)
+        # Criar abas com estilo do ttkbootstrap
+        self.abas = Notebook(self.janela, bootstyle="info")
+        self.abas.pack(fill="both", expand=True)
 
         # Instanciar telas
         self.aluno_view = AlunoView(self.abas)

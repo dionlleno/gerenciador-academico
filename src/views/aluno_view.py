@@ -4,126 +4,151 @@ from services.aluno_service import AlunoService
 class AlunoView:
     def __init__(self, parent):
         self.service = AlunoService()
-        self.definir_estilos()
         
-        aba = Frame(parent, background=self.estilos['aba_bg'])
+        aba = Frame(parent)
         parent.add(aba, text="ALUNOS")
         
         frame_superior = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2
         )
         frame_superior.place(relx=0, rely=0.01, relwidth=1, relheight=0.25)
         
         frame_meio = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2
         )
-        frame_meio.place(relx=0, rely=0.26, relwidth=1, relheight=0.74)
+        frame_meio.place(relx=0, rely=0.26, relwidth=1, relheight=0.25)
         
         frame_inferior = Frame(
-            aba, bd=4, background=self.estilos['frame_bg'],
-            highlightthickness=2,
-            highlightcolor=self.estilos['frame_hl_act'],
-            highlightbackground=self.estilos['frame_hl']
+            aba, bd=4, highlightthickness=2
         )
-        frame_inferior.place(relx=0, rely=0.26, relwidth=1, relheight=0.74)
+        frame_inferior.place(relx=0, rely=0.51, relwidth=1, relheight=0.48)
         
-        botoes = [
-            ("BUSCAR", self.buscar, 0.27),
-            ("LIMPAR", self.limpar, 0.40),
-            ("ADICIONAR", self.adicionar, 0.60),
-            ("ATUALIZAR", self.atualizar, 0.73),
-            ("EXCLUIR", self.excluir, 0.86),
+        botoes_superior = [
+            ("BUSCAR",    self.buscar,    0.27, 0.16),
+            ("LIMPAR",    self.limpar,    0.40, 0.16),
+            ("ADICIONAR", self.adicionar, 0.60, 0.16),
+            ("ATUALIZAR", self.atualizar, 0.73, 0.16),
+            ("EXCLUIR",   self.excluir,   0.86, 0.16),
         ]
-        for texto, comando, pos in botoes:
+        
+        for texto, comando, relx, rely in botoes_superior:
             Button(
-                frame_superior, text=texto, font=self.estilos['bt_font'],
-                background=self.estilos['bt_bg'], border=2, activebackground=self.estilos['bt_bg_act'], foreground=self.estilos['bt_fg'], activeforeground=self.estilos['bt_fg_act'],
+                frame_superior, text=texto, border=2,
                 command=comando
-            ).place(relx=pos, rely=0.16, relwidth=0.12, relheight=0.15)
+            ).place(relx=relx, rely=rely, relwidth=0.12, relheight=0.15)
         
-        labels = [
-            ("MATRICULA:", 0.03, 0.06),
-            ("NOME:", 0.03, 0.32),
-            ("DATA DE NASCIMENTO:", 0.03, 0.58)
+        botoes_inferior = [
+            ("BUSCAR",        self.buscar,    0.66, 0.06, 0.12, 0.08),
+            ("LIMPAR",        self.limpar,    0.79, 0.06, 0.12, 0.08),
+            ("MATRICULAR",    self.limpar, 0.02, 0.16, 0.18, 0.08),
+            ("DESMATRICULAR", self.limpar, 0.21, 0.16, 0.18, 0.08),
         ]
-        for texto, x, y in labels:
+        for texto, comando, relx, rely, relwidth, relheight in botoes_inferior:
+            Button(
+                frame_inferior, text=texto, border=2,
+                command=comando
+            ).place(relx=relx, rely=rely, relwidth=relwidth, relheight=relheight)
+        
+        labels_superior = [
+            ("MATRICULA:"         , 0.03, 0.06, 0.12, 0.10),
+            ("NOME:"              , 0.03, 0.32, 0.10, 0.10),
+            ("DATA DE NASCIMENTO:", 0.03, 0.58, 0.20, 0.10),
+        ]
+        for texto, x, y, width, height in labels_superior:
             Label(
-                frame_superior, text=texto, font=self.estilos['lb_font'],
-                background=self.estilos['lb_bg'], foreground=self.estilos['lb_fg'], 
-                activeforeground=self.estilos['lb_fg_act']
+                frame_superior, text=texto
+            ).place(relx=x, rely=y, relwidth=width, relheight=height)
+        
+        labels_inferior = [
+            ("MAT.:"       , 0.03, 0.00),
+            ("NOME:"       , 0.14, 0.00),
+            ("DATA NASC.:" , 0.45, 0.00)
+        ]
+        for texto, x, y in labels_inferior:
+            Label(
+                frame_inferior, text=texto
             ).place(relx=x, rely=y)
         
         self.entry_matricula = self.criar_entry(frame_superior, 0.02, 0.16)
         self.entry_nome = self.criar_entry(frame_superior, 0.02, 0.42, 0.23)
         self.entry_data_nascimento = self.criar_entry(frame_superior, 0.02, 0.68, 0.23)
         
-        self.lista = ttk.Treeview(frame_inferior, height=3, columns=("col1", "col2", "col3"))
-        self.configurar_lista(frame_inferior)
+        self.entry_nota_matricula = self.criar_entry_nota(frame_inferior, 0.02, 0.06, width=0.10)
+        self.entry_nota_valor = self.criar_entry_nota(frame_inferior, 0.13, 0.06, width=0.10)
         
-        self.listagem()
-
-    def definir_estilos(self):
-        self.estilos = {
-            "aba_bg": "#DFEDF1",
-            "frame_bg": "#DFEDF1",
-            "frame_hl": "#00A7F8",
-            "frame_hl_act": "#00A7F8",
-            "bt_bg": "#00A7F8",
-            "bt_fg": "#FFFFFF",
-            "bt_bg_act": "#FFFFFF",
-            "bt_fg_act": "#00A7F8",
-            "bt_font": ("Arial", 10, "bold"),
-            "lb_bg": "#DFEDF1",
-            "lb_fg": "#00A7F8",
-            "lb_fg_act": "#00A7F8",
-            "lb_font": ("Arial", 10, "bold"),
-            "entry_bg": "#FAFAFA",
-            "entry_fg": "#666666",
-            "entry_font": ("Arial", 10, "bold")
-        }
+        self.lista_aluno = ttk.Treeview(frame_meio, height=3, columns=("col1", "col2", "col3"))
+        self.lista_nota = ttk.Treeview(frame_inferior, height=3, columns=("col1", "col2", "col3", "col4"))
+        self.configurar_lista_aluno(frame_meio)
+        self.configurar_lista_nota(frame_inferior)
+        
+        self.listagem_aluno()
     
     def criar_entry(self, parent, x, y, width=0.15):
         entry = Entry(
-            parent, font=self.estilos['entry_font'],
-            foreground=self.estilos['entry_fg'], background=self.estilos['entry_bg'],
-            border=2, highlightbackground=self.estilos['entry_bg']
+            parent, border=2
         )
         entry.place(relx=x, rely=y, relwidth=width, relheight=0.15)
         return entry
     
-    def configurar_lista(self, frame_inferior):
-        self.lista.heading("#1", text="MAT.")
-        self.lista.heading("#2", text="NOME")
-        self.lista.heading("#3", text="DATA_NASC.")
-        self.lista.column("#0", width=1)
-        self.lista.column("#1", width=50)
-        self.lista.column("#2", width=400)
-        self.lista.column("#3", width=100)
-        self.lista.place(relx=0, rely=0.01, relwidth=0.98, relheight=0.97)
-        
-        scrool_x = Scrollbar(frame_inferior, orient="horizontal", command=self.lista.xview)
-        scrool_x.place(relx=0, rely=0.96, relwidth=0.98, relheight=0.03)
-        self.lista.configure(xscrollcommand=scrool_x.set)
-        
-        scrool_y = Scrollbar(frame_inferior, orient="vertical", command=self.lista.yview)
-        scrool_y.place(relx=0.98, rely=0.01, relwidth=0.02, relheight=0.98)
-        self.lista.configure(yscrollcommand=scrool_y.set)
-        self.lista.bind("<Double-1>", self.on_double_click)
-        self.lista.bind("<Return>", self.on_double_click)
-        self.lista.bind("<Shift Delete>", self.on_shift_del)
+    def criar_entry_nota(self, parent, x, y, width=0.15, height=0.08):
+        entry = Entry(
+            parent, border=2
+        )
+        entry.place(relx=x, rely=y, relwidth=width, relheight=height)
+        return entry
     
-    def listagem(self):
-        for item in self.lista.get_children():
-            self.lista.delete(item)
+    def configurar_lista_aluno(self, frame):
+        self.lista_aluno.heading("#1", text="MAT.")
+        self.lista_aluno.heading("#2", text="NOME")
+        self.lista_aluno.heading("#3", text="DATA_NASC.")
+        self.lista_aluno.column("#0", width=1)
+        self.lista_aluno.column("#1", width=50)
+        self.lista_aluno.column("#2", width=400)
+        self.lista_aluno.column("#3", width=100)
+        self.lista_aluno.place(relx=0, rely=0.01, relwidth=0.98, relheight=0.90)
+        
+        scrool_x = Scrollbar(frame, orient="horizontal", command=self.lista_aluno.xview)
+        scrool_x.place(relx=0, rely=0.90, relwidth=0.98, relheight=0.01)
+        self.lista_aluno.configure(xscrollcommand=scrool_x.set)
+        
+        scrool_y = Scrollbar(frame, orient="vertical", command=self.lista_aluno.yview)
+        scrool_y.place(relx=0.98, rely=0.01, relwidth=0.02, relheight=0.99)
+        self.lista_aluno.configure(yscrollcommand=scrool_y.set)
+        self.lista_aluno.bind("<Double-1>", self.on_double_click)
+        self.lista_aluno.bind("<Return>", self.on_double_click)
+        self.lista_aluno.bind("<Shift Delete>", self.on_shift_del)
+    
+    def configurar_lista_nota(self, frame):
+        self.lista_nota.heading("#0", text="")
+        self.lista_nota.heading("#1", text="MAT.")
+        self.lista_nota.heading("#2", text="NOME")
+        self.lista_nota.heading("#3", text="DATA_NASC.")
+        self.lista_nota.column("#0", width=1)
+        self.lista_nota.column("#1", width=50)
+        self.lista_nota.column("#2", width=400)
+        self.lista_nota.column("#3", width=100)
+        self.lista_nota.place(relx=0, rely=0.25, relwidth=0.98, relheight=0.71)
+        
+        scrool_nota_x = Scrollbar(frame, orient="horizontal", command=self.lista_nota.xview)
+        scrool_nota_x.place(relx=0, rely=0.96, relwidth=0.98, relheight=0.04)
+        self.lista_nota.configure(xscrollcommand=scrool_nota_x.set)
+        
+        scrool_nota_y = Scrollbar(frame, orient="vertical", command=self.lista_nota.yview)
+        scrool_nota_y.place(relx=0.98, rely=0.25, relwidth=0.02, relheight=0.75)
+        self.lista_nota.configure(yscrollcommand=scrool_nota_y.set)
+    
+    def listagem_aluno(self):
+        for item in self.lista_aluno.get_children():
+            self.lista_aluno.delete(item)
         for aluno in self.service.listar():
-            self.lista.insert("", END, values=(aluno.get_matricula(), aluno.get_nome(), aluno.get_data_nascimento()))
+            self.lista_aluno.insert("", END, values=(aluno.get_matricula(), aluno.get_nome(), aluno.get_data_nascimento()))
             
+    def listagem_nota(self):
+        for item in self.lista_nota.get_children():
+            self.lista_nota.delete(item)
+        for aluno in self.service.listar():
+            self.lista_nota.insert("", END, values=(aluno.get_matricula(), aluno.get_nome(), aluno.get_data_nascimento()))
+    
     def buscar(self) -> None:
         matricula = self.entry_matricula.get()
         nome = self.entry_nome.get()
